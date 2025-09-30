@@ -1,4 +1,27 @@
 // SDPX-License-Identifier: MIT
+
+// Contract Layout
+// License
+// Version
+// Imports
+// Interfaces
+// Libraries
+// -- Contracts
+// ----Errors
+// ----Type declarations
+// ----State Variables
+// ----events
+// ----modifiers
+// ----functions
+// ------Constructors
+// ------Receive functions
+// ------Fallback functions
+// ------External functions
+// ------Public functions
+// ------Internal functions
+// ------Private functions
+// --------View and pure functions
+
 pragma solidity ^0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -12,5 +35,17 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  * @notice Each user will have their own interest rate which is the global interest rate at the time.
  */
 contract RebaseToken is ERC20 {
+    error RebaseToken__InterestRateCanOnlyDecrease(uint256, uint256);
+
+    uint256 private s_interestRate = 5e10;
+
     constructor() ERC20("Rebast Token", "RBT") {}
+
+    function setInterestRate(uint256 _newInterestRate) external {
+        // Set the interest rate
+        if (_newInterestRate < s_interestRate) {
+            revert RebaseToken__InterestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
+        }
+        s_interestRate = _newInterestRate;
+    }
 }
