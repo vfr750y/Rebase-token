@@ -39,6 +39,8 @@ contract RebaseToken is ERC20 {
 
     uint256 private s_interestRate = 5e10;
 
+    event InterestRateSet(uint256 newInterestRate);
+
     constructor() ERC20("Rebase Token", "RBT") {}
 
     function setInterestRate(uint256 _newInterestRate) external {
@@ -47,5 +49,6 @@ contract RebaseToken is ERC20 {
             revert RebaseToken__InterestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
         }
         s_interestRate = _newInterestRate;
+        emit InterestRate
     }
 }
