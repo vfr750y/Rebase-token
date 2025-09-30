@@ -35,11 +35,11 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  * @notice Each user will have their own interest rate which is the global interest rate at the time.
  */
 contract RebaseToken is ERC20 {
-    error RebaseToken__InterestRateCanOnlyDecrease(uint256, uint256);
+    error RebaseToken__InterestRateCanOnlyDecrease(uint256 oldInterestRate, uint256 newInterestRate);
 
     uint256 private s_interestRate = 5e10;
 
-    constructor() ERC20("Rebast Token", "RBT") {}
+    constructor() ERC20("Rebase Token", "RBT") {}
 
     function setInterestRate(uint256 _newInterestRate) external {
         // Set the interest rate
