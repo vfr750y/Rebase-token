@@ -43,12 +43,17 @@ contract RebaseToken is ERC20 {
 
     constructor() ERC20("Rebase Token", "RBT") {}
 
+    /**
+     * @notice Set the inteset rate in the contract
+     * @param _newInterestRate New interest rate
+     * @dev The interest rate can only decrease
+     */
     function setInterestRate(uint256 _newInterestRate) external {
         // Set the interest rate
         if (_newInterestRate < s_interestRate) {
             revert RebaseToken__InterestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
         }
         s_interestRate = _newInterestRate;
-        emit InterestRate
+        emit InterestRateSet(_newInterestRate);
     }
 }
