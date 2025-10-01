@@ -38,6 +38,7 @@ contract RebaseToken is ERC20 {
     error RebaseToken__InterestRateCanOnlyDecrease(uint256 oldInterestRate, uint256 newInterestRate);
 
     uint256 private s_interestRate = 5e10;
+    mapping(address => uint256) private s_userInterestRate;
 
     event InterestRateSet(uint256 newInterestRate);
 
@@ -55,5 +56,16 @@ contract RebaseToken is ERC20 {
         }
         s_interestRate = _newInterestRate;
         emit InterestRateSet(_newInterestRate);
+    }
+
+    /**
+     *
+     */
+    function mint(address _to, uint256 _amount) external {
+        _mint(_to, _amount);
+    }
+
+    function getUserInterestRate(address _user) external view returns (uint256) {
+        return s_userInterestRate[_user];
     }
 }
