@@ -39,6 +39,7 @@ contract RebaseToken is ERC20 {
 
     uint256 private s_interestRate = 5e10;
     mapping(address => uint256) private s_userInterestRate;
+    mapping(address => uint256) private s_userLastUpdatedTimestamp;
 
     event InterestRateSet(uint256 newInterestRate);
 
@@ -59,12 +60,28 @@ contract RebaseToken is ERC20 {
     }
 
     /**
-     *
+     * @notice
      */
     function mint(address _to, uint256 _amount) external {
+        _mintAccruedInterest(_to);
+        s_userInterestRate[_to] = s_interestRate;
         _mint(_to, _amount);
     }
 
+    function _mintAccruedInterest(address _user) internal {
+        // Principle balance - Find their current balance of rebase tokens that have been minted to the user
+        // Balance of -> calculate thier current balance including any interest
+        // calculate the number for tokens that need to be minted to the user (Balance of - Principle balance)
+        // call _mint to mint the tokens to the user
+        // set the users last updated timestamp
+        s_userLastUpdatedTimestamp[_user] = block.timestamp;
+    }
+
+    /**
+     * @notice Get the interest rate for the user
+     * @param _user address of the user
+     * @return the interest rate for the user
+     */
     function getUserInterestRate(address _user) external view returns (uint256) {
         return s_userInterestRate[_user];
     }
