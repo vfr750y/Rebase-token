@@ -2,21 +2,42 @@
 
 pragma solidity ^0.8.24;
 
+import {IRebaseToken} from "./Interfaces/IRebaseToken.sol";
+
 contract Vault {
     // Pass token address to the constructor
     // create a deposit function that mints tokens to the user equal to the ETH the user has sent
     // create a redeem function that burns tokens from the user and send the user ETH
     // create a way to add rewards to the vault
+    error VAULT__RedeemFailed();
 
-    address private immutable i_rebaseToken;
+    IRebaseToken private immutable i_rebaseToken;
 
-    constructor(address _rebaseToken) {
+    event Deposit(address indexed user, uint256 amount);
+
+    constructor(IRebaseToken _rebaseToken) {
         i_rebaseToken = _rebaseToken;
     }
 
     receive() external payable {}
 
+    function deposit() external payable {
+        // 1. use the ETH send to mint tokens to the user
+        i_rebaseToken.mint(msg.sender, msg.value);
+        emit Deposit(msg.sender, msg.value);
+    }
+
+    function redeem(uint256 _amount) external {
+        // 1. burn the tokens from the user
+        i_rebaseToken.burn(msg.sender, _amount);
+        // 2. we need to send the user ETH
+        (bool success,) = payable(msg.sender).call{value: _amount}("");
+        if (!success) {
+            revert VAULT__RedeemFailed();
+        }
+    }
+
     function getRebaseTokenAddress() external view returns (address) {
-        return i_rebaseToken;
+        return address(i_rebaseToken);
     }
 }
