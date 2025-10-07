@@ -60,6 +60,14 @@ contract RebaseToken is ERC20 {
         s_interestRate = _newInterestRate;
         emit InterestRateSet(_newInterestRate);
     }
+    /**
+     * @notice Get the principle balance of a user. This is the number of tokens currently minted to the user not including ay interst that has accreued since the last time the user interacted with the protocol.
+     * @param _user The user to get the principle balance for
+     */
+
+    function principleBalanceOf(address _user) external view returns (uint256) {
+        return super.balanceOf(_user);
+    }
 
     /**
      * @notice Mint the user tokens when they deposit into the vault
