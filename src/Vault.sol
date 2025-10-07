@@ -14,6 +14,8 @@ contract Vault {
         i_rebaseToken = _rebaseToken;
     }
 
+    receive() external payable {}
+
     function getRebaseTokenAddress() external view returns (address) {
         return i_rebaseToken;
     }
