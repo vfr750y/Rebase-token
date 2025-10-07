@@ -1,4 +1,4 @@
-// SDPX-License-Identifier: MIT
+// SPDX-License-Identifier:MIT
 
 // Contract Layout
 // License
@@ -25,6 +25,7 @@
 pragma solidity ^0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Ownable} from "@openzeppelin/contracts/access/ERC20/Ownable.sol";
 
 /**
  * @title Rebase Token
@@ -34,7 +35,7 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  * @notice the interest rate in the smart contract can only decrease
  * @notice Each user will have their own interest rate which is the global interest rate at the time.
  */
-contract RebaseToken is ERC20 {
+contract RebaseToken is ERC20, Ownable {
     error RebaseToken__InterestRateCanOnlyDecrease(uint256 oldInterestRate, uint256 newInterestRate);
 
     uint256 private constant PRECISION_FACTOR = 1e18;
@@ -45,7 +46,7 @@ contract RebaseToken is ERC20 {
 
     event InterestRateSet(uint256 newInterestRate);
 
-    constructor() ERC20("Rebase Token", "RBT") {}
+    constructor() ERC20("Rebase Token", "RBT") Ownable(msg.sender) {}
 
     /**
      * @notice Set the inteset rate in the contract
