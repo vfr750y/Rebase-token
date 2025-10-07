@@ -98,6 +98,24 @@ contract RebaseToken is ERC20 {
     }
 
     /**
+     * @notice Transfer tokens from one user to another
+     * @param _recipient The user to transfer the tokens to
+     * @param _amount  THe user to transfer the tokens from
+     */
+    function transfer(address _recipient, uint256 _amount) public override returns (bool) {
+        _mintAccruedInterest(msg.sender);
+        _mintAccruedInterest(_recipient);
+        if (_amount == type(uint256).max) {
+            _amount = balanceOf(msg.sender);
+        }
+
+        if (balanceOf(_recipient) == 0) {
+            s_userInterestRate[_recipient] = s_userInterestRate[msg.sender];
+        }
+        return super.transfer(_recipient, _amount);
+    }
+
+    /**
      * @notice Calculate the interst that has accumulated since the last update
      * @param _user The user to calculate the interest accumulated for
      * @return linearInterest The interest that has acumulated since the last update
