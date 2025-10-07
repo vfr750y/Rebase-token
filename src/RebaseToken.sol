@@ -103,14 +103,24 @@ contract RebaseToken is ERC20 {
         uint256 timeElapsed = block.timestamp - s_userLastUpdatedTimestamp[_user];
         linearInterest = (PRECISION_FACTOR + (s_userInterestRate[_user] * timeElapsed));
     }
+    /**
+     * @notice Mint the accrued interest to the user since the last time they interacted with the protocol (e.g. burn, mint, transfer
+     * @param _user The user to mint the accrued interest to
+     */
 
     function _mintAccruedInterest(address _user) internal {
         // Principle balance - Find their current balance of rebase tokens that have been minted to the user
+        uint256 previousPrincipleBalance = super.balanceOf(_user);
+
         // Balance of -> calculate thier current balance including any interest
+        uint256 currentBalance = balanceOf(_user);
+
         // calculate the number for tokens that need to be minted to the user (Balance of - Principle balance)
+        uint256 balanceIncrease = currentBalance - previousPrincipleBalance;
         // call _mint to mint the tokens to the user
         // set the users last updated timestamp
         s_userLastUpdatedTimestamp[_user] = block.timestamp;
+        _mint(_user, balanceIncrease);
     }
 
     /**
