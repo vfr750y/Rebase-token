@@ -47,6 +47,10 @@ contract RebaseTokenTest is Test {
         vault.deposit{value: amount}();
 
         // get balance after deposit,
+        uint256 startBalance = rebaseToken.balanceOf(user);
+        console.log("startBalance", startBalance);
+        assertEq(startBalance, amount);
+
         // check balance after - balane before =  1 Eth.
     }
 }
