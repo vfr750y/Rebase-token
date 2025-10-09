@@ -16,8 +16,6 @@ contract RebaseTokenTest is Test {
     address public owner = makeAddr("owner");
     address public user = makeAddr("user");
 
-    uint256 public amount;
-
     function setUp() public {
         // make calls seem to come from the contract owner
         vm.startPrank(owner);
@@ -32,5 +30,21 @@ contract RebaseTokenTest is Test {
         // add funds of 1 ETH to the vault
         (bool success,) = payable(address(vault)).call{value: 1e18}("");
         vm.stopPrank();
+    }
+
+    // check interest is linear -
+    // get balance before deposit,
+    // deposit 1 eth ,
+    // get balance after deposit,
+    // check balance after - balance before =  1 Eth.
+
+    function testDepositLinear(uint256 amount) public {
+        // restrict the amount of ETH to a value between 1e4 and uint96.max
+        amount = bound(amount, 1e4, type(uint96).max);
+        // deposit 1 eth ,
+        vm.startPrank(user);
+        vm.deal(user, amount);
+        // get balance after deposit,
+        // check balance after - balance before =  1 Eth.
     }
 }
