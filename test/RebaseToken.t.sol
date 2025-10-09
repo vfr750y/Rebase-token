@@ -16,6 +16,8 @@ contract RebaseTokenTest is Test {
     address public owner = makeAddr("owner");
     address public user = makeAddr("user");
 
+    uint256 public amount;
+
     function setUp() public {
         // make calls seem to come from the contract owner
         vm.startPrank(owner);
@@ -27,6 +29,8 @@ contract RebaseTokenTest is Test {
         vault = new Vault(IRebaseToken(address(rebaseToken)));
         // Set permissions for the vault
         rebaseToken.grantMintAndBurnRole(address(vault));
+        // add funds of 1 ETH to the vault
+        payable(address(vault)).call{value: 1e18}("");
         vm.stopPrank();
     }
 }
