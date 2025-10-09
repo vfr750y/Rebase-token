@@ -39,12 +39,14 @@ contract RebaseTokenTest is Test {
     // check balance after - balance before =  1 Eth.
 
     function testDepositLinear(uint256 amount) public {
-        // restrict the amount of ETH to a value between 1e4 and uint96.max
-        amount = bound(amount, 1e4, type(uint96).max);
-        // deposit 1 eth ,
+        // resrict the amount of ETH to a value between 1e5 and uint96.max without discarding any test runs.
+        amount = bound(amount, 1e5, type(uint96).max);
+        // deposit 1 eth
         vm.startPrank(user);
         vm.deal(user, amount);
+        vault.deposit{value: amount}();
+
         // get balance after deposit,
-        // check balance after - balance before =  1 Eth.
+        // check balance after - balane before =  1 Eth.
     }
 }
