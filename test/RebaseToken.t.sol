@@ -30,7 +30,7 @@ contract RebaseTokenTest is Test {
         // Set permissions for the vault
         rebaseToken.grantMintAndBurnRole(address(vault));
         // add funds of 1 ETH to the vault
-        payable(address(vault)).call{value: 1e18}("");
+        (bool success,) = payable(address(vault)).call{value: 1e18}("");
         vm.stopPrank();
     }
 }
