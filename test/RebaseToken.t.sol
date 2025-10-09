@@ -54,8 +54,14 @@ contract RebaseTokenTest is Test {
         vm.warp(block.timestamp + 1 hours);
         uint256 middleBalance = rebaseToken.balanceOf(user);
         assertGt(middleBalance, startBalance);
+        // warp the time again by same amount and check the balance again
+        vm.warp(block.timestamp + 1 hours);
+        uint256 endBalance = rebaseToken.balanceOf(user);
+        assertGt(endBalance, middleBalance);
 
-        // check balance after - balane before =  1 Eth.
+        // check difference
+        assertEq((endBalance - middleBalance), (middleBalance - startBalance));
+
         vm.stopPrank();
     }
 }
