@@ -17,12 +17,16 @@ contract RebaseTokenTest is Test {
     address public user = makeAddr("user");
 
     function setUp() public {
+        // make calls seem to come from the contract owner
+        vm.startPrank(owner);
+
         // Deploy rebase token
 
         rebaseToken = new RebaseToken();
-        vault = new Vault(IRebaseToken(address(rebaseToken)));
-
         // Deploy Vault
+        vault = new Vault(IRebaseToken(address(rebaseToken)));
         // Set permissions for the vault
+        rebaseToken.grantMintAndBurnRole(address(vault));
+        vm.stopPrank();
     }
 }
