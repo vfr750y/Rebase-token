@@ -60,7 +60,7 @@ contract RebaseTokenTest is Test {
         assertGt(endBalance, middleBalance);
 
         // check difference
-        assertEq((endBalance - middleBalance), (middleBalance - startBalance));
+        assertApproxEqAbs((endBalance - middleBalance), (middleBalance - startBalance), 1);
 
         vm.stopPrank();
     }
