@@ -193,25 +193,25 @@ contract RebaseTokenTest is Test {
         assertEq(updatedRate, newRate, "Interest rate should match new rate after update");
     }
 
-    // function testGetUserInterestRate() public {
-    //     // Test initial user interest rate (before any interaction)
-    //     uint256 initialUserRate = rebaseToken.getUserInterestRate(user);
-    //     assertEq(initialUserRate, 0, "Initial user interest rate should be 0");
+    function testGetUserInterestRate() public {
+        // Test initial user interest rate (before any interaction)
+        uint256 initialUserRate = rebaseToken.getUserInterestRate(user);
+        assertEq(initialUserRate, 0, "Initial user interest rate should be 0");
 
-    //     // Test user interest rate after minting
-    //     uint256 depositAmount = 1e18; // 1 ETH
-    //     vm.deal(address(vault), depositAmount);
-    //     vm.prank(owner);
-    //     rebaseToken.mint(user, depositAmount);
-    //     uint256 userRateAfterMint = rebaseToken.getUserInterestRate(user);
-    //     assertEq(userRateAfterMint, 5e10, "User interest rate should match global rate after mint");
+        // Test user interest rate after minting via vault deposit
+        uint256 depositAmount = 1e18; // 1 ETH
+        vm.deal(user, depositAmount);
+        vm.prank(user);
+        vault.deposit{value: depositAmount}();
+        uint256 userRateAfterMint = rebaseToken.getUserInterestRate(user);
+        assertEq(userRateAfterMint, 5e10, "User interest rate should match global rate after mint");
 
-    //     // Test user interest rate after transfer
-    //     address user2 = makeAddr("user2");
-    //     uint256 transferAmount = depositAmount / 2;
-    //     vm.prank(user);
-    //     rebaseToken.transfer(user2, transferAmount);
-    //     uint256 user2RateAfterTransfer = rebaseToken.getUserInterestRate(user2);
-    //     assertEq(user2RateAfterTransfer, 5e10, "Recipient should inherit sender's interest rate after transfer");
-    // }
+        // Test user interest rate after transfer
+        address user2 = makeAddr("user2");
+        uint256 transferAmount = depositAmount / 2;
+        vm.prank(user);
+        rebaseToken.transfer(user2, transferAmount);
+        uint256 user2RateAfterTransfer = rebaseToken.getUserInterestRate(user2);
+        assertEq(user2RateAfterTransfer, 5e10, "Recipient should inherit sender's interest rate after transfer");
+    }
 }
