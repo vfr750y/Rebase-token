@@ -27,9 +27,11 @@ contract RebaseTokenTest is Test {
         vault = new Vault(IRebaseToken(address(rebaseToken)));
         // Set permissions for the vault
         rebaseToken.grantMintAndBurnRole(address(vault));
-        // add funds of 1 ETH to the vault
-        (bool success,) = payable(address(vault)).call{value: 1e18}("");
         vm.stopPrank();
+    }
+
+    function addRewardsToVault(uint256 rewardAmount) public {
+        (bool success,) = payable(address(vault)).call{value: rewardAmount}("");
     }
 
     // check interest is linear -
@@ -78,5 +80,32 @@ contract RebaseTokenTest is Test {
         assertEq(rebaseToken.balanceOf(user), 0);
         assertEq(address(user).balance, amount);
         vm.stopPrank();
+    }
+
+    function testRedeemAfterTimePassed(uint256 depositAmount, uint256 time) public {
+        time = bound(time, 1000, type(uint32).max);
+        depositAmount = bound(depositAmount, 1e5, type(uint96).max);
+        // 1. Deposit
+
+        vm.deal(user, depositAmount);
+        vm.prank(user);
+        vault.deposit{value: depositAmount}();
+        // 2. Warp the time
+        vm.warp(block.timestamp + time);
+        uint256 balanceAfterSomeTime = rebaseToken.balanceOf(user);
+        // Add the rewards to the vault
+        vm.deal(owner, balanceAfterSomeTime - depositAmount);
+        vm.prank(owner);
+        addRewardsToVault(balanceAfterSomeTime - depositAmount);
+        // 3. Redeem
+
+        vm.prank(user);
+        vault.redeem(type(uint256).max);
+
+        vm.stopPrank();
+        uint256 ethBalance = address(user).balance;
+
+        assertEq(ethBalance, balanceAfterSomeTime);
+        assertGt(ethBalance, depositAmount);
     }
 }
