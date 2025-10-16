@@ -50,6 +50,12 @@ contract CrossChainTest is Test {
         vm.selectFork(arbSepoliaFork);
         arbSepoliaNetworkDetails = ccipLocalSimulatorFork.getNetworkDetails(block.chainid);
         arbSepoliaToken = new RebaseToken();
+        arbSepoliaPool = new RebaseTokenPool(
+            IERC20(address(arbSepoliaToken)),
+            new address[](0),
+            arbSepoliaNetworkDetails.rmnProxyAddress,
+            arbSepoliaNetworkDetails.routerAddress
+        );
         vm.startPrank(owner);
         vm.stopPrank();
     }
