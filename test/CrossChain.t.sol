@@ -51,6 +51,9 @@ contract CrossChainTest is Test {
             address(sepoliaToken)
         );
         TokenAdminRegistry(sepoliaNetworkDetails.tokenAdminRegistryAddress).acceptAdminRole(address(sepoliaToken));
+        TokenAdminRegistry(sepoliaNetworkDetails.tokenAdminRegistryAddress).setPool(
+            address(sepoliaToken), address(sepoliaPool)
+        );
         vm.stopPrank();
 
         // Deploy and confirguree on Arbitrum Sepolia
@@ -68,6 +71,9 @@ contract CrossChainTest is Test {
             address(arbSepoliaToken)
         );
         TokenAdminRegistry(arbSepoliaNetworkDetails.tokenAdminRegistryAddress).acceptAdminRole(address(arbSepoliaToken));
+        TokenAdminRegistry(arbSepoliaNetworkDetails.tokenAdminRegistryAddress).setPool(
+            address(arbSepoliaToken), address(arbSepoliaPool)
+        );
         vm.startPrank(owner);
         vm.stopPrank();
     }
