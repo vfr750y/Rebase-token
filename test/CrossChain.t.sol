@@ -43,7 +43,8 @@ contract CrossChainTest is Test {
             sepoliaNetworkDetails.rmnProxyAddress,
             sepoliaNetworkDetails.routerAddress
         );
-
+        sepoliaToken.grantMintAndBurnRole(address(vault));
+        sepoliaToken.grantMintAndBurnRole(address(sepoliaPool));
         vm.stopPrank();
 
         // Deploy and confirguree on Arbitrum Sepolia
@@ -56,6 +57,7 @@ contract CrossChainTest is Test {
             arbSepoliaNetworkDetails.rmnProxyAddress,
             arbSepoliaNetworkDetails.routerAddress
         );
+        arbSepoliaToken.grantMintAndBurnRole(address(arbSepoliaPool));
         vm.startPrank(owner);
         vm.stopPrank();
     }
