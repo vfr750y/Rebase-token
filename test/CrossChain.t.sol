@@ -62,6 +62,9 @@ contract CrossChainTest is Test {
             arbSepoliaNetworkDetails.routerAddress
         );
         arbSepoliaToken.grantMintAndBurnRole(address(arbSepoliaPool));
+        RegistryModuleOwnerCustom(arbSepoliaNetworkDetails.registryModuleOwnerCustomAddress).registerAdminViaOwner(
+            address(arbSepoliaToken)
+        );
         vm.startPrank(owner);
         vm.stopPrank();
     }
