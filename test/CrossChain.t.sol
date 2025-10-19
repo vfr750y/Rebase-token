@@ -116,4 +116,14 @@ contract CrossChainTest is Test {
         });
         TokenPool(localPool).applyChainUpdates(chainsToAdd);
     }
+
+    function bridgeTokens(
+        uint256 amountToBridge,
+        uint256 localFork,
+        uint256 remoteFork,
+        Register.NetworkDetails memory localNetworkDetails,
+        Register.NetworkDetails memory remoteNetworkDetails,
+        RebaseToken localToken,
+        RebaseToken remoteToken
+    ) public {}
 }
