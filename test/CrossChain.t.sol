@@ -17,7 +17,7 @@ import {IRouterClient} from "@ccip/contracts/src/v0.8/ccip/interfaces/IRouterCli
 
 contract CrossChainTest is Test {
     address owner = makeAddr("owner");
-    address alice = makeAddr("alice");
+    address user = makeAddr("user");
     uint256 sepoliaFork;
     uint256 arbSepoliaFork;
 
@@ -130,7 +130,7 @@ contract CrossChainTest is Test {
         RebaseToken remoteToken
     ) public {
         vm.selectFork(localFork);
-        vm.startPrank(alice);
+        // vm.startPrank(user);
         //           struct EVM2AnyMessage {
         //     bytes receiver; // abi.encode(receiver address) for dest EVM chains
         //     bytes data; // Data payload
@@ -141,7 +141,7 @@ contract CrossChainTest is Test {
         Client.EVMTokenAmount[] memory tokenAmounts = new Client.EVMTokenAmount[](1);
         tokenAmounts[0] = Client.EVMTokenAmount({token: address(localToken), amount: amountToBridge});
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
-            receiver: abi.encode(alice),
+            receiver: abi.encode(user),
             data: "",
             tokenAmounts: tokenAmounts,
             feeToken: localNetworkDetails.linkAddress,
@@ -150,25 +150,25 @@ contract CrossChainTest is Test {
 
         uint256 fee =
             IRouterClient(localNetworkDetails.routerAddress).getFee(remoteNetworkDetails.chainSelector, message);
-        ccipLocalSimulatorFork.requestLinkFromFaucet(alice, fee);
-        vm.prank(alice);
+        ccipLocalSimulatorFork.requestLinkFromFaucet(user, fee);
+        vm.prank(user);
         IERC20(localNetworkDetails.linkAddress).approve(localNetworkDetails.routerAddress, fee);
-        vm.prank(alice);
+        vm.prank(user);
         IERC20(address(localToken)).approve(localNetworkDetails.routerAddress, amountToBridge);
-        uint256 localBalanceBefore = IERC20(address(localToken)).balanceOf(alice);
-        vm.prank(alice);
+        uint256 localBalanceBefore = IERC20(address(localToken)).balanceOf(user);
+        vm.prank(user);
         IRouterClient(localNetworkDetails.routerAddress).ccipSend(remoteNetworkDetails.chainSelector, message);
-        uint256 localBalanceAfter = localToken.balanceOf(alice);
+        uint256 localBalanceAfter = localToken.balanceOf(user);
         assertEq(localBalanceAfter, localBalanceBefore - amountToBridge);
-        uint256 localUserInterestRate = localToken.getUserInterestRate(alice);
+        uint256 localUserInterestRate = localToken.getUserInterestRate(user);
 
         vm.selectFork(remoteFork);
         vm.warp(block.timestamp + 20 minutes);
-        uint256 remoteBalanceBefore = remoteToken.balanceOf(alice);
+        uint256 remoteBalanceBefore = remoteToken.balanceOf(user);
         ccipLocalSimulatorFork.switchChainAndRouteMessage(remoteFork);
-        uint256 remoteBalanceAfter = remoteToken.balanceOf(alice);
+        uint256 remoteBalanceAfter = remoteToken.balanceOf(user);
         assertEq(remoteBalanceAfter, remoteBalanceBefore + amountToBridge);
-        uint256 remoteUserInterestRate = remoteToken.getUserInterestRate(alice);
+        uint256 remoteUserInterestRate = remoteToken.getUserInterestRate(user);
         assertEq(remoteUserInterestRate, localUserInterestRate);
     }
 }
